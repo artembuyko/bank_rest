@@ -1,1 +1,10 @@
 # Здесь будет OpenAPI описание всех доступных эндпоинтов и моделей данных.
+openapi: 3.0.3
+info:
+  title: bank card management system
+  description: Документация моего приложения
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+    description: Локальный сервер разработки
+paths:

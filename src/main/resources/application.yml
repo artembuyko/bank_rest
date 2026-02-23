@@ -7,7 +7,7 @@
 #  - Настроить параметры безопасности и JWT.
 #  - Включить Swagger UI.
 server:
-  port: 8080
+  port: 8081
 
 spring:
   datasource:
@@ -25,9 +25,14 @@ spring:
     enabled: true
     change-log: classpath:db/migration/db.changelog-master.xml
 
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-  show-actuator: true
+  springdoc:
+    api-docs:
+      enabled: false
+    swagger-ui:
+      enabled: true
+      url: /api-external/openapi.yaml
+      validator-url: none
+
+logging:
+  level:
+    org.springframework.security: DEBUG
