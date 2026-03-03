@@ -1,6 +1,7 @@
 package com.example.bankcards.entity;
 
 import com.example.bankcards.entity.enums.Role;
+import com.example.bankcards.entity.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
-        //добавить в таблицу юзер индексы
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -25,13 +25,20 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false,name = "roles")
+    @Column(nullable = false,length = 50)
+    private String name;
+
+    @Column(nullable = false,name = "role")
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles = new HashSet<>();
+    private Role role;
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "owner")
     private Set<Card> cards = new HashSet<>();
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
     private RefreshToken refreshToken;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserStatus status;
 }

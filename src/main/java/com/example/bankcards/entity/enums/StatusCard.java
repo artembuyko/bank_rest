@@ -1,5 +1,5 @@
 package com.example.bankcards.entity.enums;
 
 public enum StatusCard {
-    ACTIVE,BLOCKED,EXPIRED
+    ACTIVE,BLOCKED,EXPIRED,DELETED
 }

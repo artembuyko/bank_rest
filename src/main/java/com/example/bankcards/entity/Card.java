@@ -3,6 +3,10 @@ package com.example.bankcards.entity;
 import com.example.bankcards.entity.enums.StatusCard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,8 +14,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(
         name = "bank_card"
-        //добавить индексы и unique constraint
 )
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Card extends BaseEntity{
 
     @Column(name="owner_name",nullable = false,length = 150,updatable = false)
@@ -24,7 +31,6 @@ public class Card extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User owner;
 
-    //добавить аннотацию, добавляющую валидацию по **** **** **** 1234
     @Column(name = "card_number",nullable = false,unique = true)
     private String cardNumber;
 

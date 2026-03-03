@@ -1,10 +1,9 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,22 +12,24 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class RefreshToken extends BaseEntity{
 
     @OneToOne()
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
 
-    @Column(name = "user_agent",nullable = false)
-    private String userAgent;
-
-    @Column(name = "ip_address",nullable = false)
-    private String ipAddress;
-
     @Column(nullable = false,unique = true)
     private String token;
 
-    @Column(nullable = false,unique = true)
-    private LocalDateTime expiryDate;
+    @Column(nullable = false)
+    private boolean used;
+
+    public boolean isExpired() {
+        return Instant.now().isAfter(expiryDate);
+    }
+
+    @Column(name = "expiry_date", nullable = false)
+    private Instant expiryDate;
 
 }
