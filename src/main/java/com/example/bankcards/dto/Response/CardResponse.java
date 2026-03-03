@@ -18,4 +18,5 @@ public class CardResponse implements Serializable {
     private BigDecimal balance;
     private String status;
     private LocalDateTime expirationDate;
+    private String cardNumber;
 }
