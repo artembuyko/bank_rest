@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- таблица пользователей -->
+    <changeSet id="1" author="developer">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- поля baseentity -->
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- таблица карт -->
+    <changeSet id="2" author="developer">
+        <createTable tableName="bank_card">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="owner_name" type="VARCHAR(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)"/>
+            <column name="user_id" type="BIGINT"/>
+            <column name="card_number" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="expired_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="DECIMAL(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- поля baseentity -->
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- внешний ключ на пользователя -->
+        <addForeignKeyConstraint
+                baseTableName="bank_card"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_card_user"/>
+    </changeSet>
+
+    <!-- таблица refresh токенов -->
+    <changeSet id="3" author="developer">
+        <createTable tableName="refresh_token">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="token" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="used" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <!-- поля baseentity -->
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- внешний ключ на пользователя -->
+        <addForeignKeyConstraint
+                baseTableName="refresh_token"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_refresh_token_user"/>
+    </changeSet>
+
+    <!-- таблица транзакций (переводов) -->
+    <changeSet id="4" author="developer">
+        <createTable tableName="transactional_card">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="source_card" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_card" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_stamp" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="DECIMAL(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- поля baseentity -->
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- внешние ключи на карты -->
+        <addForeignKeyConstraint
+                baseTableName="transactional_card"
+                baseColumnNames="source_card"
+                referencedTableName="bank_card"
+                referencedColumnNames="id"
+                constraintName="fk_transaction_source"/>
+
+        <addForeignKeyConstraint
+                baseTableName="transactional_card"
+                baseColumnNames="target_card"
+                referencedTableName="bank_card"
+                referencedColumnNames="id"
+                constraintName="fk_transaction_target"/>
+    </changeSet>
+
+    <!-- индексы для ускорения поиска -->
+    <changeSet id="5" author="developer">
+        <createIndex indexName="idx_card_user" tableName="bank_card">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex indexName="idx_transaction_source" tableName="transactional_card">
+            <column name="source_card"/>
+        </createIndex>
+        <createIndex indexName="idx_transaction_target" tableName="transactional_card">
+            <column name="target_card"/>
+        </createIndex>
+        <createIndex indexName="idx_refresh_token_user" tableName="refresh_token">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
